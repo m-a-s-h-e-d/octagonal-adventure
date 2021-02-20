@@ -7,19 +7,18 @@ public class Player : MonoBehaviour
     private const float MaxSpeed = 15;
 
     [SerializeField]
-    private float moveSpeed;
+    private float moveSpeed = 0;
 
     [SerializeField]
-    private float jumpSpeed;
+    private float jumpSpeed = 0;
 
     private bool grounded;
-    private int jumpsRemaining;
 
     [SerializeField, HideInInspector]
-    private Rigidbody2D rigidbody;
+    private new Rigidbody2D rigidbody;
 
     [SerializeField, HideInInspector]
-    private Collider2D collider;
+    private new Collider2D collider;
 
     private void Awake()
     {
@@ -27,10 +26,58 @@ public class Player : MonoBehaviour
         collider = GetComponent<Collider2D>();
     }
 
+    private void Start()
+    {
+        Game.InstantiatePrefab("Crosshair");
+    }
+    
     private void Update()
     {
         ProcessCollision();
         ProcessInput();
+    }
+
+    // Gets called on first frame when grounded
+    private void OnGrounded()
+    {
+        // Prevents character from sliding on ground
+        collider.sharedMaterial.friction = 1;
+        collider.enabled = false;
+        collider.enabled = true;
+    }
+
+    // Gets called on first frame when not grounded
+    private void OnAirborne()
+    {
+        // Prevents character from sticking to walls
+        collider.sharedMaterial.friction = 0;
+        collider.enabled = false;
+        collider.enabled = true;
+    }
+
+    // Gets called every frame when move input is not zero
+    private void Move(float input)
+    {
+        // Prevent additional force if going too much fast
+        if (Mathf.Abs(rigidbody.velocity.x) > MaxSpeed) { return; }
+
+        Vector2 force = new Vector2(input * moveSpeed, 0);
+        rigidbody.AddForce(force, ForceMode2D.Force);
+    }
+
+    // Gets called on jump input
+    private void Jump()
+    {
+        // Prevent jump if not grounded
+        if (!grounded) { return; }
+
+        Vector2 force = new Vector2(0, jumpSpeed);
+        rigidbody.AddForce(force, ForceMode2D.Impulse);
+    }
+
+    private void Fire()
+    {
+        Game.InstantiatePrefab("GrappleProjectile");
     }
 
     private void ProcessCollision()
@@ -42,6 +89,7 @@ public class Player : MonoBehaviour
     {
         float inputHorizontal = Input.GetAxisRaw("Horizontal");
         bool inputJump = Input.GetButtonDown("Jump");
+        bool inputFire = Input.GetMouseButtonDown(0);
 
         if (!Mathf.Approximately(inputHorizontal, 0))
         {
@@ -52,23 +100,11 @@ public class Player : MonoBehaviour
         {
             Jump();
         }
-    }
 
-    // Movement Behaviour
-    private void Move(float input)
-    {
-        // Prevent additional force if going too much fast
-        if (Mathf.Abs(rigidbody.velocity.x) > MaxSpeed) { return; }
-        Vector2 force = new Vector2(input * moveSpeed, 0);
-        rigidbody.AddForce(force, ForceMode2D.Force);
-    }
-
-    // Jump Behaviour
-    private void Jump()
-    {
-        if (!grounded) { return; }
-        Vector2 force = new Vector2(0, jumpSpeed);
-        rigidbody.AddForce(force, ForceMode2D.Impulse);
+        if (inputFire)
+        {
+            Fire();
+        }
     }
 
     // Checks if grounded or not
@@ -85,14 +121,23 @@ public class Player : MonoBehaviour
             if (collision.collider == null) { continue; }
             if (collision.collider.isTrigger) { continue; }
 
-            // Debug draw a red line indicating ground collision
             Debug.DrawLine(origin, new Vector3(origin.x, origin.y - rayDistance), Color.red);
-            grounded = true;
+
+            if (!grounded)
+            {
+                grounded = true;
+                OnGrounded();
+            }
+
             return;
         }
 
-        // Debug draw a green line indicating no ground collision
-        grounded = false;
         Debug.DrawLine(origin, new Vector3(origin.x, origin.y - rayDistance), Color.green);
+
+        if (grounded)
+        {
+            grounded = false;
+            OnAirborne();
+        }
     }
 }
