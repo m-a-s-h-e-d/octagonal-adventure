@@ -19,8 +19,8 @@ public static class Game
     /// </summary>
     /// <param name="name">Prefab name</param>
     /// <returns>Clone</returns>
-    public static GameObject InstantiatePrefab(string name)
+    public static GameObject InstantiatePrefab(string name, Vector3 position = default, Transform parent = null)
     {
-        return Object.Instantiate(LoadPrefab(name)); 
+        return Object.Instantiate(LoadPrefab(name), position, default, parent); 
     }
 }

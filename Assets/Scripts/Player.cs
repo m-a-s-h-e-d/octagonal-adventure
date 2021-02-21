@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
     [SerializeField, HideInInspector]
     private new Collider2D collider;
 
+    private Grapple grapple;
+
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
@@ -77,7 +79,14 @@ public class Player : MonoBehaviour
 
     private void Fire()
     {
-        Game.InstantiatePrefab("GrappleProjectile");
+        if (grapple == null)
+        {
+            grapple = Game.InstantiatePrefab("Grapple", transform.position, transform).GetComponent<Grapple>();
+        }
+        else
+        {
+            Destroy(grapple.gameObject);
+        }
     }
 
     private void ProcessCollision()
@@ -131,6 +140,8 @@ public class Player : MonoBehaviour
 
             return;
         }
+
+        // No collisions have been found
 
         Debug.DrawLine(origin, new Vector3(origin.x, origin.y - rayDistance), Color.green);
 

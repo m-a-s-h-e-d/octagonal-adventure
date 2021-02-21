@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fe56bb9f1b1c0749b4d1b896b9dfd3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   jumpSpeed: 20
   rigidbody: {fileID: 0}
   collider: {fileID: 0}
