@@ -155,7 +155,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 20, y: -10}
   m_SizeDelta: {x: 650, y: 220}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &172563869
@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 933bd2a92df91d14ba2ceae451020818, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 120
 --- !u!20 &1528022909 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 2051791393916350300, guid: c60b3cfa58230a845ae0f33b9194fb8b,

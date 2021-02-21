@@ -51,6 +51,22 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         ProcessInputFixed();
+        transform.localRotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collider)
+    {
+        // Sets parent on solid collision which will
+        // sync movement with moving platforms etc...
+        transform.SetParent(collider.transform);
+    }
+
+    private void OnCollisionExit2D(Collision2D collider)
+    {
+        if (transform.parent == collider.transform)
+        {
+            transform.SetParent(null);
+        }
     }
 
     private void OnDestroy()
@@ -110,10 +126,18 @@ public class Player : MonoBehaviour
     {
         if (grapple == null)
         {
+            // Just in case
+            DistanceJoint2D joint = GetComponent<DistanceJoint2D>();
+            if (joint != null) { Destroy(joint); }
+
             grapple = Game.InstantiatePrefab("Grapple", transform.position, transform).GetComponent<Grapple>();
         }
         else
         {
+            // Just in case
+            DistanceJoint2D joint = GetComponent<DistanceJoint2D>();
+            if (joint != null) { Destroy(joint); }
+
             Destroy(grapple.gameObject);
         }
     }
@@ -195,7 +219,7 @@ public class Player : MonoBehaviour
             OnAirborne();
         }
 
-        // Used to offset the 2 raycasts by 15% of the collider size in the x dimension
+        // Used to offset the raycasts by 15% of the collider size in the x dimension
         float GetBoundsOffset()
         {
             const float RelativeAmount = 0.15f;

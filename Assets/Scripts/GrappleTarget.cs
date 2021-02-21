@@ -24,8 +24,19 @@ public class GrappleTarget : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == "Player") { return; }
-        transform.SetParent(collider.transform, true);
-        grapple.OnCollision(collider);
+        switch (collider.gameObject.tag)
+        {
+            case "Player":
+                return;
+
+            case "WorldBlocked":
+                Destroy(grapple.gameObject); 
+                return;
+
+            default:
+                transform.SetParent(collider.transform, true);
+                grapple.OnCollision(collider);
+                break;
+        }
     }
 }

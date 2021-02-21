@@ -5,13 +5,13 @@ using UnityEngine;
 public class Rotator : MonoBehaviour
 {
     [SerializeField]
-    private float speed;
+    private float speed = 0;
 
     private void FixedUpdate()
     {
         transform.localRotation = Quaternion.Euler(
-            transform.eulerAngles.x, 
-            transform.eulerAngles.y, 
-            transform.eulerAngles.z - speed);
+            transform.localEulerAngles.x, 
+            transform.localEulerAngles.y, 
+            transform.localEulerAngles.z - (speed / 60));
     }
 }
