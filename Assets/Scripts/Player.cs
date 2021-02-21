@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float jumpSpeed = 0;
 
-    private bool grounded;
+    private bool grounded = false;
 
     private float inputHorizontal;
     private float inputVertical;
