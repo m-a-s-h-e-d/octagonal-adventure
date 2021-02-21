@@ -39,6 +39,7 @@ public class Grapple : MonoBehaviour
     private void Start()
     {
         direction = (crosshair.transform.position - player.transform.position).normalized;
+        target.transform.SetParent(null);
         StartCoroutine(Lifetimer());
     }
 
@@ -64,6 +65,14 @@ public class Grapple : MonoBehaviour
         joint.enableCollision = true;
         
         StartCoroutine(UpdateTargetPosition());
+    }
+
+    public void ChangeDistance(float input)
+    {
+        const float Multiplier = 0.2f;
+
+        if (joint == null) { return; }
+        joint.distance -= input * Multiplier;
     }
 
     private IEnumerator Lifetimer()
